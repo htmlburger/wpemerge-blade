@@ -38,3 +38,19 @@ $container['obsidian_blade.templating.engine.options'] = [
     // ... other options
 ];
 ```
+
+## Extending Blade
+
+You can use the following to extend blade with a custom directive, for example:
+```php
+$blade = \Obsidian\Framework::resolve( 'obsidian_blade.templating.engine' );
+$blade->compiler()->directive( 'mydirective', function( $expression ) {
+    return "<?php echo 'MyDirective: ' . $expression . '!'; ?>";
+} );
+```
+With this, you now have your very own custom Blade directive:
+```blade
+@mydirective('foobar')
+```
+
+More information on how you can extend Blade is available on https://laravel.com/docs/5.4/blade#extending-blade
