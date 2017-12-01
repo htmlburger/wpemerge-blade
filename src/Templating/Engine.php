@@ -65,7 +65,7 @@ class Engine implements EngineInterface {
 	 * @return mixed
 	 */
 	public function __call( $method, $parameters ) {
-		$factory = $this->blade->get_factory();
+		$factory = $this->blade->get_view_factory();
 		return call_user_func_array( [$factory, $method], $parameters );
 	}
 }
