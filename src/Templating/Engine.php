@@ -34,11 +34,7 @@ class Engine implements EngineInterface {
 	}
 
 	/**
-	 * Render a template to a string
-	 *
-	 * @param  string $file
-	 * @param  array  $context
-	 * @return string
+	 * {@inheritDoc}
 	 */
 	public function render( $file, $context ) {
 		$file = substr( $file, strlen( $this->views ) );
