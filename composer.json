@@ -1,9 +1,9 @@
 {
-    "name": "htmlburger/wp-emerge-blade",
+    "name": "htmlburger/wpemerge-blade",
     "description": "Enables the use of Blade templates in WP Emerge.",
-    "keywords": ["wordpress", "framework", "template", "view", "wp-emerge"],
+    "keywords": ["wordpress", "framework", "template", "view", "wpemerge"],
     "license": "GPL-2.0",
-    "homepage": "https://github.com/htmlburger/wp-emerge-blade",
+    "homepage": "https://github.com/htmlburger/wpemerge-blade",
     "authors": [
         {
             "name": "htmlBurger",
@@ -18,8 +18,8 @@
         }
     ],
     "support": {
-        "source": "https://github.com/htmlburger/wp-emerge-blade",
-        "issues": "https://github.com/htmlburger/wp-emerge-blade/issues",
+        "source": "https://github.com/htmlburger/wpemerge-blade",
+        "issues": "https://github.com/htmlburger/wpemerge-blade/issues",
         "email": "wordpress@htmlburger.com"
     },
     "autoload": {
@@ -30,7 +30,7 @@
     "require": {
         "php": ">=5.5",
         "illuminate/view": "5.4.*",
-        "htmlburger/wp-emerge": "^0.3.0"
+        "htmlburger/wpemerge": "^0.4.0"
     },
     "require-dev": {
     }
