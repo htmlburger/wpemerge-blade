@@ -1,6 +1,6 @@
 <?php
 
-namespace ObsidianBlade\Templating;
+namespace WPEmergeBlade\Templating;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as ContainerContract;

@@ -1,8 +1,8 @@
 <?php
 
-namespace ObsidianBlade\Templating;
+namespace WPEmergeBlade\Templating;
 
-use Obsidian\Templating\EngineInterface;
+use WPEmerge\Templating\EngineInterface;
 
 class Engine implements EngineInterface {
 	/**

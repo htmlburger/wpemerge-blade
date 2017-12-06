@@ -1,9 +1,9 @@
 {
-    "name": "htmlburger/obsidian-blade",
-    "description": "Enables the use of Blade templates in Obsidian.",
-    "keywords": ["wordpress", "framework", "template", "view", "obsidian"],
+    "name": "htmlburger/wp-emerge-blade",
+    "description": "Enables the use of Blade templates in WP Emerge.",
+    "keywords": ["wordpress", "framework", "template", "view", "wp-emerge"],
     "license": "GPL-2.0",
-    "homepage": "https://github.com/htmlburger/obsidian-blade",
+    "homepage": "https://github.com/htmlburger/wp-emerge-blade",
     "authors": [
         {
             "name": "htmlBurger",
@@ -18,19 +18,19 @@
         }
     ],
     "support": {
-        "source": "https://github.com/htmlburger/obsidian-blade",
-        "issues": "https://github.com/htmlburger/obsidian-blade/issues",
+        "source": "https://github.com/htmlburger/wp-emerge-blade",
+        "issues": "https://github.com/htmlburger/wp-emerge-blade/issues",
         "email": "wordpress@htmlburger.com"
     },
     "autoload": {
         "psr-4": {
-            "ObsidianBlade\\": "src/"
+            "WPEmergeBlade\\": "src/"
         }
     },
     "require": {
         "php": ">=5.5",
         "illuminate/view": "5.4.*",
-        "htmlburger/obsidian": "^0.1.0"
+        "htmlburger/wp-emerge": "^0.1.0"
     },
     "require-dev": {
     }

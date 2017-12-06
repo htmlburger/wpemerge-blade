@@ -1,17 +1,17 @@
 <?php
 
-namespace ObsidianBlade\Templating;
+namespace WPEmergeBlade\Templating;
 
-use Obsidian\Helpers\Mixed;
-use Obsidian\ServiceProviders\ServiceProviderInterface;
+use WPEmerge\Helpers\Mixed;
+use WPEmerge\ServiceProviders\ServiceProviderInterface;
 
 class ServiceProvider implements ServiceProviderInterface {
 	/**
 	 * {@inheritDoc}
 	 */
 	public function register( $container ) {
-		$container['obsidian_blade.templating.engine'] = function( $c ) {
-			$key = 'obsidian_blade.templating.engine.options';
+		$container['wp_emerge_blade.templating.engine'] = function( $c ) {
+			$key = 'wp_emerge_blade.templating.engine.options';
 			$options = isset( $c[ $key ] ) ? $c[ $key ] : [];
 
 			$options = array_merge( [
