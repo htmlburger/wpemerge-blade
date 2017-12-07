@@ -1,4 +1,4 @@
-# Оbsidian Blade
+# WP Emerge Blade
 
 Enables the use of Blade templates in WP Emerge.
 
