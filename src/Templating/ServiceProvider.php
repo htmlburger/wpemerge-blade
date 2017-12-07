@@ -20,7 +20,7 @@ class ServiceProvider implements ServiceProviderInterface {
 			], $options );
 
 			$blade = new Blade( Mixed::toArray( $options['views'] ), $options['cache'] );
-			return new Engine( $blade, $options['views'], $options['cache'] );
+			return new Engine( $blade, $c[ WPEMERGE_CONFIG_KEY ]['global_template_context'], $options['views'], $options['cache'] );
 		};
 	}
 

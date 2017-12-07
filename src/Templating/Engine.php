@@ -23,12 +23,15 @@ class Engine implements EngineInterface {
 	 * Constructor
 	 *
 	 * @param Blade  $blade
+	 * @param array  $global_context
 	 * @param string $views
 	 * @param string $cache
 	 */
-	public function __construct( Blade $blade, $views, $cache ) {
+	public function __construct( Blade $blade, $global_context, $views, $cache ) {
 		$this->blade = $blade;
         $this->views = $views;
+
+        $this->blade->get_view_factory()->share( 'global', $global_context );
 
         wp_mkdir_p( $cache ); // ensure cache directory exists
 	}
