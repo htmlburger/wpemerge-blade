@@ -1,22 +1,22 @@
 # WP Emerge Blade
 
-Enables the use of Blade templates in WP Emerge.
+Enables the use of Blade views in WP Emerge.
 
 ## Quickstart
 
 1. Run `composer require htmlburger/wpemerge-blade` in your theme directory
-1. Add `\WPEmergeBlade\Templating\ServiceProvider` to your array of providers when booting WP Emerge:
+1. Add `\WPEmergeBlade\View\ServiceProvider` to your array of providers when booting WP Emerge:
     ```php
     WPEmerge::boot( [
         'providers' => [
-            \WPEmergeBlade\Templating\ServiceProvider::class,
+            \WPEmergeBlade\View\ServiceProvider::class,
         ],
     ] );
     ```
-1. Replace the current template engine by adding this immediately after `WPEmerge::boot()`:
+1. Replace the current view engine by adding this immediately after `WPEmerge::boot()`:
     ```php
     $container = WPEmerge::getContainer();
-    $container[ WPEMERGE_TEMPLATING_ENGINE_KEY ] = $container->raw( 'wpemerge_blade.templating.engine' );
+    $container[ WPEMERGE_VIEW_ENGINE_KEY ] = $container->raw( 'wpemerge_blade.view.engine' );
     ```
 
 ## Options
@@ -32,7 +32,7 @@ Default options:
 You can use this to change the default options:
 ```php
 $container = WPEmerge::getContainer();
-$container['wpemerge_blade.templating.engine.options'] = [
+$container['wpemerge_blade.view.engine.options'] = [
     // example:
     'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'blade-cache',
     // ... other options
@@ -43,7 +43,7 @@ $container['wpemerge_blade.templating.engine.options'] = [
 
 You can use the following to extend blade with a custom directive, for example:
 ```php
-$blade = WPEmerge::resolve( 'wpemerge_blade.templating.engine' );
+$blade = WPEmerge::resolve( 'wpemerge_blade.view.engine' );
 $blade->compiler()->directive( 'mydirective', function( $expression ) {
     return "<?php echo 'MyDirective: ' . $expression . '!'; ?>";
 } );

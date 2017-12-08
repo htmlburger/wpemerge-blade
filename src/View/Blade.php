@@ -1,6 +1,6 @@
 <?php
 
-namespace WPEmergeBlade\Templating;
+namespace WPEmergeBlade\View;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as ContainerContract;
@@ -77,7 +77,7 @@ class Blade
 	}
 
 	/**
-	 * Render a template to a string
+	 * Render a view to a string
 	 *
 	 * @param  string $view
 	 * @param  array  $data
@@ -86,8 +86,8 @@ class Blade
 	 * @return string
 	 */
 	public function render( $view, $data = [], $merge_data = [] ) {
-		$template = $this->container['view']->make( $view, $data, $merge_data );
-		return $template->render();
+		$view = $this->container['view']->make( $view, $data, $merge_data );
+		return $view->render();
 	}
 
 	/**

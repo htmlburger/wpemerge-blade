@@ -1,8 +1,8 @@
 <?php
 
-namespace WPEmergeBlade\Templating;
+namespace WPEmergeBlade\View;
 
-use WPEmerge\Templating\EngineInterface;
+use WPEmerge\View\EngineInterface;
 
 class Engine implements EngineInterface {
 	/**
