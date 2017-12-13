@@ -42,7 +42,11 @@ class Engine implements EngineInterface {
 			->listen( 'composing: *', function( $event_name, $arguments ) {
 				$view = $arguments[0];
 				$context = View::compose( $view->getName() );
-				$view->with( $context );
+				$data = $view->getData();
+				$view->with( array_merge(
+					$context,
+					$data
+				) );
 			} );
 
 		wp_mkdir_p( $cache ); // ensure cache directory exists
