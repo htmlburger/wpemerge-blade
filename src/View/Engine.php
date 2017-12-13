@@ -2,6 +2,8 @@
 
 namespace WPEmergeBlade\View;
 
+use View;
+use WPEmerge\Helpers\Handler;
 use WPEmerge\View\EngineInterface;
 
 class Engine implements EngineInterface {
@@ -23,28 +25,47 @@ class Engine implements EngineInterface {
 	 * Constructor
 	 *
 	 * @param Blade  $blade
-	 * @param array  $global_context
 	 * @param string $views
 	 * @param string $cache
 	 */
-	public function __construct( Blade $blade, $global_context, $views, $cache ) {
+	public function __construct( Blade $blade, $views, $cache ) {
 		$this->blade = $blade;
-        $this->views = $views;
+		$this->views = $views;
 
-        $this->blade->get_view_factory()->share( 'global', $global_context );
+		$this->blade
+			->get_view_factory()
+			->share( 'global', View::getGlobals() );
 
-        wp_mkdir_p( $cache ); // ensure cache directory exists
+		$this->blade
+			->get_view_factory()
+			->getDispatcher()
+			->listen( 'composing: *', function( $event_name, $arguments ) {
+				$view = $arguments[0];
+				$context = View::compose( $view->getName() );
+				$view->with( $context );
+			} );
+
+		wp_mkdir_p( $cache ); // ensure cache directory exists
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function render( $file, $context ) {
-		$file = substr( $file, strlen( $this->views ) );
-		$file = preg_replace( '~^/~', '', $file );
-		$file = preg_replace( '~\.blade\.php$~', '', $file );
-		$file = str_replace( DIRECTORY_SEPARATOR, '.', $file );
-		return $this->blade->render( $file, $context );
+	public function exists( $view ) {
+		return $this->blade->get_view_factory()->exists( $view );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function render( $views, $context ) {
+		foreach ( $views as $view ) {
+			if ( $this->exists( $view ) ) {
+				return $this->blade->render( $view, $context );
+			}
+		}
+
+		return '';
 	}
 
 	/**
