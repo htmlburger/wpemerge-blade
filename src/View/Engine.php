@@ -62,6 +62,18 @@ class Engine implements EngineInterface {
 	/**
 	 * {@inheritDoc}
 	 */
+	public function canonical( $view ) {
+		$finder = $this->blade->get_view_factory()->getFinder();
+		try {
+			return realpath( $finder->find( $view ) );
+		} catch (InvalidArgumentException $e) {
+			return '';
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function render( $views, $context ) {
 		foreach ( $views as $view ) {
 			if ( $this->exists( $view ) ) {
