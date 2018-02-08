@@ -10,8 +10,8 @@ class ServiceProvider implements ServiceProviderInterface {
 	 * {@inheritDoc}
 	 */
 	public function register( $container ) {
-		$container['wpemerge_blade.view.engine'] = function( $c ) {
-			$key = 'wpemerge_blade.view.engine.options';
+		$container['wpemerge_blade.view.viewengine'] = function( $c ) {
+			$key = 'wpemerge_blade.view.viewengine.options';
 			$options = isset( $c[ $key ] ) ? $c[ $key ] : [];
 
 			$options = array_merge( [
@@ -20,7 +20,7 @@ class ServiceProvider implements ServiceProviderInterface {
 			], $options );
 
 			$blade = new Blade( Mixed::toArray( $options['views'] ), $options['cache'] );
-			return new Engine( $blade, $options['views'], $options['cache'] );
+			return new ViewEngine( $blade, $options['views'], $options['cache'] );
 		};
 	}
 

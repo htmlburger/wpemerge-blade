@@ -2,11 +2,10 @@
 
 namespace WPEmergeBlade\View;
 
-use View;
-use WPEmerge\Helpers\Handler;
-use WPEmerge\View\EngineInterface;
+use WPEmerge\Facades\View;
+use WPEmerge\View\ViewEngineInterface;
 
-class Engine implements EngineInterface {
+class ViewEngine implements ViewEngineInterface {
 	/**
 	 * Blade instance
 	 *
@@ -40,12 +39,14 @@ class Engine implements EngineInterface {
 			->get_view_factory()
 			->getDispatcher()
 			->listen( 'composing: *', function( $event_name, $arguments ) {
-				$view = $arguments[0];
-				$context = View::compose( $view->getName() );
-				$data = $view->getData();
-				$view->with( array_merge(
-					$context,
-					$data
+				$blade_view = $arguments[0];
+
+				$view = (new BladeView())->setName( $blade_view->getName() );
+				View::compose( $view );
+
+				$blade_view->with( array_merge(
+					$view->getContext(),
+					$blade_view->getData()
 				) );
 			} );
 
@@ -74,14 +75,17 @@ class Engine implements EngineInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function render( $views, $context ) {
+	public function make( $views, $context = [] ) {
 		foreach ( $views as $view ) {
 			if ( $this->exists( $view ) ) {
-				return $this->blade->render( $view, $context );
+				return (new BladeView())
+					->setName( $view )
+					->setBladeEngine( $this->blade )
+					->with( $context );
 			}
 		}
 
-		return '';
+		throw new Exception( 'View not found for "' . implode( ', ', $views ) . '"' );
 	}
 
 	/**
