@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "63b9bca627f6275d30a3d66cc68767ee",
+    "content-hash": "a452b054c19da8fe224b2187f78e68ff",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -140,16 +140,16 @@
         },
         {
             "name": "htmlburger/wpemerge",
-            "version": "0.8.1",
+            "version": "0.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/htmlburger/wpemerge.git",
-                "reference": "5301facf8cbd0c9d39301345ade207ad8b402c7a"
+                "reference": "35b872e8f9c947bf783b3af73d4515903b4887eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/htmlburger/wpemerge/zipball/5301facf8cbd0c9d39301345ade207ad8b402c7a",
-                "reference": "5301facf8cbd0c9d39301345ade207ad8b402c7a",
+                "url": "https://api.github.com/repos/htmlburger/wpemerge/zipball/35b872e8f9c947bf783b3af73d4515903b4887eb",
+                "reference": "35b872e8f9c947bf783b3af73d4515903b4887eb",
                 "shasum": ""
             },
             "require": {
@@ -170,13 +170,12 @@
                 "files": [
                     "config.php",
                     "src/functions.php",
-                    "src/functions-aliases.php",
                     "src/load.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0"
+                "GPL-2.0-only"
             ],
             "authors": [
                 {
@@ -205,7 +204,7 @@
                 "wordpress",
                 "wpemerge"
             ],
-            "time": "2018-01-08T15:06:34+00:00"
+            "time": "2018-02-08T17:37:18+00:00"
         },
         {
             "name": "illuminate/container",
