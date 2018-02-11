@@ -25,7 +25,10 @@
     "autoload": {
         "psr-4": {
             "WPEmergeBlade\\": "src/"
-        }
+        },
+        "files": [
+            "config.php"
+        ]
     },
     "require": {
         "php": "^7.0",

@@ -10,8 +10,8 @@ class ServiceProvider implements ServiceProviderInterface {
 	 * {@inheritDoc}
 	 */
 	public function register( $container ) {
-		$container['wpemerge_blade.view.viewengine'] = function( $c ) {
-			$key = 'wpemerge_blade.view.viewengine.options';
+		$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ] = function( $c ) {
+			$key = WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_OPTIONS_KEY;
 			$options = isset( $c[ $key ] ) ? $c[ $key ] : [];
 
 			$options = array_merge( [

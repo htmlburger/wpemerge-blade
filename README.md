@@ -16,7 +16,7 @@ Enables the use of Blade views in WP Emerge.
 1. Replace the current view engine by adding this immediately after `WPEmerge::boot()`:
     ```php
     $container = WPEmerge::getContainer();
-    $container[ WPEMERGE_VIEW_ENGINE_KEY ] = $container->raw( 'wpemerge_blade.view.engine' );
+    $container[ WPEMERGE_VIEW_ENGINE_KEY ] = $container->raw( WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
     ```
 
 ## Options
@@ -32,7 +32,7 @@ Default options:
 You can use this to change the default options:
 ```php
 $container = WPEmerge::getContainer();
-$container['wpemerge_blade.view.engine.options'] = [
+$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_OPTIONS_KEY ] = [
     // example:
     'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'blade-cache',
     // ... other options
