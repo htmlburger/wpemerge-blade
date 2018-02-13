@@ -3,18 +3,19 @@
 namespace WPEmergeBlade\View;
 
 use WPEmerge\Facades\View;
+use WPEmerge\Helpers\Mixed;
 use WPEmerge\View\ViewEngineInterface;
 
 class ViewEngine implements ViewEngineInterface {
 	/**
-	 * Blade instance
+	 * Blade instance.
 	 *
 	 * @var Blade
 	 */
 	protected $blade = null;
 
 	/**
-	 * Root directory for all views
+	 * Root directory for all views.
 	 *
 	 * @var string
 	 */
@@ -29,7 +30,7 @@ class ViewEngine implements ViewEngineInterface {
 	 */
 	public function __construct( Blade $blade, $views, $cache ) {
 		$this->blade = $blade;
-		$this->views = $views;
+		$this->views = Mixed::normalizePath( realpath( $views ) );
 
 		$this->blade
 			->get_view_factory()
@@ -57,6 +58,7 @@ class ViewEngine implements ViewEngineInterface {
 	 * {@inheritDoc}
 	 */
 	public function exists( $view ) {
+		$view = $this->bladeCanonical( $view );
 		return $this->blade->get_view_factory()->exists( $view );
 	}
 
@@ -64,6 +66,7 @@ class ViewEngine implements ViewEngineInterface {
 	 * {@inheritDoc}
 	 */
 	public function canonical( $view ) {
+		$view = $this->bladeCanonical( $view );
 		$finder = $this->blade->get_view_factory()->getFinder();
 		try {
 			return realpath( $finder->find( $view ) );
@@ -77,6 +80,7 @@ class ViewEngine implements ViewEngineInterface {
 	 */
 	public function make( $views, $context = [] ) {
 		foreach ( $views as $view ) {
+			$view = $this->bladeCanonical( $view );
 			if ( $this->exists( $view ) ) {
 				return (new BladeView())
 					->setName( $view )
@@ -89,7 +93,26 @@ class ViewEngine implements ViewEngineInterface {
 	}
 
 	/**
-	 * Get the compiler
+	 * Return a canonical string representation of the view name in Blade's format.
+	 *
+	 * @param  string $view
+	 * @return string
+	 */
+	public function bladeCanonical( $view ) {
+		$views_root = $this->views . DIRECTORY_SEPARATOR;
+		$normalized = realpath( $view );
+
+		if ( $normalized && is_file( $normalized ) ) {
+			$normalized = preg_replace( '~^' . preg_quote( $views_root, '~' ) . '~', '', $normalized );
+			$normalized = str_replace( DIRECTORY_SEPARATOR, '.', $normalized );
+			$view = preg_replace( '~\.blade\.php$~', '', $normalized );
+		}
+
+		return $view;
+	}
+
+	/**
+	 * Get the compiler.
 	 *
 	 * @return mixed
 	 */
@@ -98,7 +121,7 @@ class ViewEngine implements ViewEngineInterface {
 	}
 
 	/**
-	 * Pass any other methods to the view factory instance
+	 * Pass any other methods to the view factory instance.
 	 *
 	 * @param  string $method
 	 * @param  array  $params
