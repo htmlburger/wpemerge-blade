@@ -78,14 +78,13 @@ class ViewEngine implements ViewEngineInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function make( $views, $context = [] ) {
+	public function make( $views ) {
 		foreach ( $views as $view ) {
 			$view = $this->bladeCanonical( $view );
 			if ( $this->exists( $view ) ) {
 				return (new BladeView())
 					->setName( $view )
-					->setBladeEngine( $this->blade )
-					->with( $context );
+					->setBladeEngine( $this->blade );
 			}
 		}
 
