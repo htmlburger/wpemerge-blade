@@ -16,8 +16,8 @@ class ServiceProvider implements ServiceProviderInterface {
 		$this->extendConfig( $container, 'blade', [
 			'replace_default_engine' => true,
 			'options' => [
-				'views' => get_stylesheet_directory(),
-				'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'blade',
+				'views' => MixedType::normalizePath( get_stylesheet_directory() ),
+				'cache' => MixedType::normalizePath( get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'blade' ),
 			],
 		] );
 
