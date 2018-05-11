@@ -1,6 +1,6 @@
 # WP Emerge Blade
 
-Enables the use of Blade views in WP Emerge.
+Enables the use of Blade views in [WP Emerge](https://github.com/htmlburger/wpemerge).
 
 ## Quickstart
 
@@ -13,30 +13,32 @@ Enables the use of Blade views in WP Emerge.
         ],
     ] );
     ```
-1. Replace the current view engine by adding this immediately after `WPEmerge::boot()`:
-    ```php
-    $container = WPEmerge::getContainer();
-    $container[ WPEMERGE_VIEW_ENGINE_KEY ] = $container->raw( WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
-    ```
 
 ## Options
 
 Default options:
 ```php
 [
-    'views' => get_stylesheet_directory(),
-    'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'blade',
+    'replace_default_engine' => true,
+    'options' => [
+        'views' => get_stylesheet_directory(),
+        'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'blade',
+    ],
 ]
 ```
 
-You can use this to change the default options:
+You can change these options by specifying a `blade` key in your WP Emerge config array:
 ```php
-$container = WPEmerge::getContainer();
-$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_OPTIONS_KEY ] = [
-    // example:
-    'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'blade-cache',
-    // ... other options
-];
+WPEmerge::boot( [
+    // ... other WP Emerge options
+    'blade' => [
+        // ... other WP Emerge Blade options
+        'options' => [
+            // ... other Blade options
+            'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'blade-cache',
+        ],
+    ],
+] );
 ```
 
 ## Extending Blade

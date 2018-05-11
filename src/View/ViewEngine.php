@@ -2,8 +2,9 @@
 
 namespace WPEmergeBlade\View;
 
+use Exception;
 use WPEmerge\Facades\View;
-use WPEmerge\Helpers\Mixed;
+use WPEmerge\Helpers\MixedType;
 use WPEmerge\View\ViewEngineInterface;
 
 class ViewEngine implements ViewEngineInterface {
@@ -30,7 +31,7 @@ class ViewEngine implements ViewEngineInterface {
 	 */
 	public function __construct( Blade $blade, $views, $cache ) {
 		$this->blade = $blade;
-		$this->views = Mixed::normalizePath( realpath( $views ) );
+		$this->views = MixedType::normalizePath( realpath( $views ) );
 
 		$this->blade
 			->get_view_factory()
@@ -104,7 +105,7 @@ class ViewEngine implements ViewEngineInterface {
 		if ( $normalized && is_file( $normalized ) ) {
 			$normalized = preg_replace( '~^' . preg_quote( $views_root, '~' ) . '~', '', $normalized );
 			$normalized = str_replace( DIRECTORY_SEPARATOR, '.', $normalized );
-			$view = preg_replace( '~\.blade\.php$~', '', $normalized );
+			$view = preg_replace( '~(\.blade)?\.php$~', '', $normalized );
 		}
 
 		return $view;

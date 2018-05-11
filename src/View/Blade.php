@@ -50,6 +50,11 @@ class Blade
 		$this->service_provider->register();
 
 		$this->engine_resolver = $this->container->make( 'view.engine.resolver' );
+
+		// Render .php files with blade as well.
+		$this->engine_resolver->register('php', function () {
+			return $this->engine_resolver->resolve( 'blade' );
+		});
 	}
 
 	/**

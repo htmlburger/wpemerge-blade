@@ -2,26 +2,34 @@
 
 namespace WPEmergeBlade\View;
 
-use WPEmerge\Helpers\Mixed;
+use WPEmerge\Helpers\MixedType;
+use WPEmerge\ServiceProviders\ExtendsConfigTrait;
 use WPEmerge\ServiceProviders\ServiceProviderInterface;
 
 class ServiceProvider implements ServiceProviderInterface {
+	use ExtendsConfigTrait;
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public function register( $container ) {
-		$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ] = function( $c ) {
-			$key = WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_OPTIONS_KEY;
-			$options = isset( $c[ $key ] ) ? $c[ $key ] : [];
-
-			$options = array_merge( [
+		$this->extendConfig( $container, 'blade', [
+			'replace_default_engine' => true,
+			'options' => [
 				'views' => get_stylesheet_directory(),
 				'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'blade',
-			], $options );
+			],
+		] );
 
-			$blade = new Blade( Mixed::toArray( $options['views'] ), $options['cache'] );
+		$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ] = function( $c ) {
+			$options = $c[ WPEMERGE_CONFIG_KEY ]['blade']['options'];
+			$blade = new Blade( MixedType::toArray( $options['views'] ), $options['cache'] );
 			return new ViewEngine( $blade, $options['views'], $options['cache'] );
 		};
+
+		if ( $container[ WPEMERGE_CONFIG_KEY ]['blade']['replace_default_engine'] ) {
+			$container[ WPEMERGE_VIEW_ENGINE_KEY ] = $container->raw( WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
+		}
 	}
 
 	/**
