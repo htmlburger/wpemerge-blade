@@ -55,4 +55,4 @@ With this, you now have your very own custom Blade directive:
 @mydirective('foobar')
 ```
 
-More information on how you can extend Blade is available on https://laravel.com/docs/5.4/blade#extending-blade
+More information on how you can extend Blade is available on [https://laravel.com/docs/5.4/blade#extending-blade](https://laravel.com/docs/5.4/blade#extending-blade)
