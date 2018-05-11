@@ -19,6 +19,7 @@ Enables the use of Blade views in [WP Emerge](https://github.com/htmlburger/wpem
 Default options:
 ```php
 [
+    // Automatically replace the default view engine for WP Emerge.
     'replace_default_engine' => true,
     'options' => [
         'views' => get_stylesheet_directory(),
