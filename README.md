@@ -46,7 +46,7 @@ WPEmerge::boot( [
 
 You can use the following to extend blade with a custom directive, for example:
 ```php
-$blade = WPEmerge::resolve( 'wpemerge_blade.view.engine' );
+$blade = WPEmerge::resolve( WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
 $blade->compiler()->directive( 'mydirective', function( $expression ) {
     return "<?php echo 'MyDirective: ' . $expression . '!'; ?>";
 } );
