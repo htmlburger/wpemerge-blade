@@ -70,7 +70,8 @@ class ViewEngine implements ViewEngineInterface {
 		$view = $this->bladeCanonical( $view );
 		$finder = $this->blade->get_view_factory()->getFinder();
 		try {
-			return realpath( $finder->find( $view ) );
+			$match_root = '/^' . preg_quote( $this->views . DIRECTORY_SEPARATOR, '/' ) . '/i';
+			return preg_replace( $match_root, '', realpath( $finder->find( $view ) ) );
 		} catch (InvalidArgumentException $e) {
 			return '';
 		}
