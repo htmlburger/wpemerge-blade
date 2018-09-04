@@ -36,6 +36,31 @@ class ServiceProvider implements ServiceProviderInterface {
 	 * {@inheritDoc}
 	 */
 	public function boot( $container ) {
-		// nothing to boot
+		$hooks = [
+			'index',
+			'404',
+			'archive',
+			'author',
+			'category',
+			'tag',
+			'taxonomy',
+			'date',
+			'embed',
+			'home',
+			'frontpage',
+			'page',
+			'paged',
+			'search',
+			'single',
+			'singular',
+			'attachment'
+		];
+
+		foreach ( $hooks as $hook ) {
+			add_filter( "{$hook}_template_hierarchy", [$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ], 'filter_core_template_hierarchy'], 100 );
+		}
+
+		add_filter( 'comments_template', [$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ], 'filter_core_comments_template'], 100 );
+		add_filter( 'get_search_form', [$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ], 'filter_core_searchform'], 100 );
 	}
 }

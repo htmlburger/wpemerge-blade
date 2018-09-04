@@ -2,7 +2,7 @@
 
 namespace WPEmergeBlade\View;
 
-use Exception;
+use WPEmerge\Exceptions\ViewException;
 use WPEmerge\Facades\View;
 use WPEmerge\Helpers\MixedType;
 use WPEmerge\View\ViewEngineInterface;
@@ -90,7 +90,7 @@ class ViewEngine implements ViewEngineInterface {
 			}
 		}
 
-		throw new Exception( 'View not found for "' . implode( ', ', $views ) . '"' );
+		throw new ViewException( 'View not found for "' . implode( ', ', $views ) . '"' );
 	}
 
 	/**
@@ -131,5 +131,94 @@ class ViewEngine implements ViewEngineInterface {
 	public function __call( $method, $parameters ) {
 		$factory = $this->blade->get_view_factory();
 		return call_user_func_array( [$factory, $method], $parameters );
+	}
+
+	/**
+	 * Check whether a string has a certain suffix.
+	 *
+	 * @param  string  $haystack
+	 * @param  string  $needle
+	 * @return boolean
+	 */
+	private function hasSuffix( $haystack, $needle ) {
+		return strtolower( substr( $haystack, -strlen( $needle ) ) ) === $needle;
+	}
+
+	/**
+	 * Replace a string suffix with a different one.
+	 *
+	 * @param  string $haystack
+	 * @param  string $needle
+	 * @param  string $replace
+	 * @return string
+	 */
+	protected function replaceSuffix( $haystack, $needle, $replace ) {
+		if ( ! $this->hasSuffix( $haystack, $needle ) || $this->hasSuffix( $haystack, $replace ) ) {
+			return $haystack;
+		}
+		return substr( $haystack, 0, -strlen( $needle ) ) . $replace;
+	}
+
+	/**
+	 * Filter core template hierarchy to prioritize files with the .blade.php extension.
+	 *
+	 * @param  array<string> $templates
+	 * @return array<string>
+	 */
+	public function filter_core_template_hierarchy( $templates ) {
+		$php_templates = array_filter( $templates, function( $template ) {
+			return $this->hasSuffix( $template, '.php' ) && ! $this->hasSuffix( $template, '.blade.php');
+		} );
+
+		$template_pairs = array_map( function( $template ) {
+			return [
+				$this->replaceSuffix( $template, '.php', '.blade.php' ),
+				$template,
+			];
+		}, $php_templates );
+
+		$blade_templates = [];
+
+		foreach ( $template_pairs as $pair ) {
+			$blade_templates = array_merge( $blade_templates, $pair );
+		}
+
+		return $blade_templates;
+	}
+
+	/**
+	 * Filter the core comments template to prioritize files with the .blade.php extension.
+	 *
+	 * @param  string  $template
+	 * @param  boolean $proxy
+	 * @return string
+	 */
+	public function filter_core_comments_template( $template, $proxy = true ) {
+		$is_php = $this->hasSuffix( $template, '.php' );
+		$is_blade = $this->hasSuffix( $template, '.blade.php' );
+		$blade_template = $this->replaceSuffix( $template, '.php', '.blade.php' );
+		$proxy_template = WPEMERGEBLADE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'comments-proxy.php';
+
+		if ( $is_php && ! $is_blade && $this->exists( $blade_template ) ) {
+			$template = $proxy ? $proxy_template : $blade_template;
+		}
+
+		return $template;
+	}
+
+	/**
+	 * Filter the core searchform html if a searchform.blade.php view exists.
+	 *
+	 * @param  string $html
+	 * @return string
+	 */
+	public function filter_core_searchform( $html ) {
+		try {
+			$html = $this->make( ['searchform'] )->toString();
+		} catch ( ViewException $e ) {
+			// No searchform.blade.php exists - ignore.
+		}
+
+		return $html;
 	}
 }

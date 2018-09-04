@@ -2,9 +2,9 @@
 
 namespace WPEmergeBlade\View;
 
-use Exception;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\Response;
+use WPEmerge\Exceptions\ViewException;
 use WPEmerge\View\HasContextTrait;
 use WPEmerge\View\HasNameTrait;
 use WPEmerge\View\ViewInterface;
@@ -42,7 +42,7 @@ class BladeView implements ViewInterface {
 	 */
 	public function toString() {
 		if ( empty( $this->getName() ) ) {
-			throw new Exception( 'View must have a name.' );
+			throw new ViewException( 'View must have a name.' );
 		}
 
 		return $this->getBladeEngine()->render( $this->getName(), $this->getContext() );
