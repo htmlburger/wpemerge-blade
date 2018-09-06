@@ -196,10 +196,10 @@ class ViewEngine implements ViewEngineInterface {
 	public function filter_core_comments_template( $template, $proxy = true ) {
 		$is_php = $this->hasSuffix( $template, '.php' );
 		$is_blade = $this->hasSuffix( $template, '.blade.php' );
-		$blade_template = $this->replaceSuffix( $template, '.php', '.blade.php' );
+		$blade_template = $is_blade ? $template : $this->replaceSuffix( $template, '.php', '.blade.php' );
 		$proxy_template = WPEMERGEBLADE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'comments-proxy.php';
 
-		if ( $is_php && ! $is_blade && $this->exists( $blade_template ) ) {
+		if ( $is_php && $this->exists( $blade_template ) ) {
 			$template = $proxy ? $proxy_template : $blade_template;
 		}
 
