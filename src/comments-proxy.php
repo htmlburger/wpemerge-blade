@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $engine = WPEmerge::resolve( WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
 $blade_template = $engine->filter_core_comments_template( $theme_template, false );
 $proxy_template = $engine->filter_core_comments_template( $theme_template, true );
