@@ -2,10 +2,10 @@
 
 namespace WPEmergeBlade\View;
 
-use WPEmerge\Exceptions\ViewException;
 use WPEmerge\Facades\View;
 use WPEmerge\Helpers\MixedType;
 use WPEmerge\View\ViewEngineInterface;
+use WPEmerge\View\ViewNotFoundException;
 
 class ViewEngine implements ViewEngineInterface {
 	/**
@@ -90,7 +90,7 @@ class ViewEngine implements ViewEngineInterface {
 			}
 		}
 
-		throw new ViewException( 'View not found for "' . implode( ', ', $views ) . '"' );
+		throw new ViewNotFoundException( 'View not found for "' . implode( ', ', $views ) . '"' );
 	}
 
 	/**
@@ -215,7 +215,7 @@ class ViewEngine implements ViewEngineInterface {
 	public function filter_core_searchform( $html ) {
 		try {
 			$html = $this->make( ['searchform'] )->toString();
-		} catch ( ViewException $e ) {
+		} catch ( ViewNotFoundException $e ) {
 			// No searchform.blade.php exists - ignore.
 		}
 
