@@ -166,24 +166,21 @@ class ViewEngine implements ViewEngineInterface {
 	 * @return array<string>
 	 */
 	public function filter_core_template_hierarchy( $templates ) {
-		$php_templates = array_filter( $templates, function( $template ) {
-			return $this->hasSuffix( $template, '.php' ) && ! $this->hasSuffix( $template, '.blade.php');
-		} );
-
 		$template_pairs = array_map( function( $template ) {
-			return [
-				$this->replaceSuffix( $template, '.php', '.blade.php' ),
-				$template,
-			];
-		}, $php_templates );
+			$pair = [$template];
+			if ( ! $this->hasSuffix( $template, '.blade.php') ) {
+				array_unshift( $pair, $this->replaceSuffix( $template, '.php', '.blade.php' ) );
+			}
+			return $pair;
+		}, $templates );
 
-		$blade_templates = [];
+		$filtered_templates = [];
 
 		foreach ( $template_pairs as $pair ) {
-			$blade_templates = array_merge( $blade_templates, $pair );
+			$filtered_templates = array_merge( $filtered_templates, $pair );
 		}
 
-		return $blade_templates;
+		return $filtered_templates;
 	}
 
 	/**
