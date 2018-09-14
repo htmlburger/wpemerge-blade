@@ -13,6 +13,7 @@ Enables the use of Blade views in [WP Emerge](https://github.com/htmlburger/wpem
         ],
     ] );
     ```
+1. If you are using the [WP Emerge Starter Theme](https://github.com/htmlburger/wpemerge-theme) you can replace your theme views with the ones inside `theme/alternative/blade/`.
 
 ## Options
 
