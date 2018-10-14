@@ -28,7 +28,9 @@ class ServiceProvider implements ServiceProviderInterface {
 		};
 
 		if ( $container[ WPEMERGE_CONFIG_KEY ]['blade']['replace_default_engine'] ) {
-			$container[ WPEMERGE_VIEW_ENGINE_KEY ] = $container->raw( WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
+			$container[ WPEMERGE_VIEW_ENGINE_KEY ] = function( $c ) {
+				return $c[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ];
+			};
 		}
 	}
 
