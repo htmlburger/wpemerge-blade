@@ -42,14 +42,20 @@ class ViewEngine implements ViewEngineInterface {
 			->getDispatcher()
 			->listen( 'composing: *', function( $event_name, $arguments ) {
 				$blade_view = $arguments[0];
+				$blade_data = $blade_view->getData();
 
-				$view = (new BladeView())->setName( $blade_view->getName() );
+				// Remove Blade internals from context.
+				unset( $blade_data['obLevel'] );
+				unset( $blade_data['__env'] );
+				unset( $blade_data['app'] );
+
+				$view = (new BladeView())
+					->setName( $blade_view->getName() )
+					->with( $blade_data );
+
 				View::compose( $view );
 
-				$blade_view->with( array_merge(
-					$view->getContext(),
-					$blade_view->getData()
-				) );
+				$blade_view->with( $view->getContext() );
 			} );
 
 		wp_mkdir_p( $cache ); // ensure cache directory exists
