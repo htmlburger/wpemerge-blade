@@ -1,4 +1,8 @@
 <?php
+
+use WPEmerge\Facades\View;
+use WPEmerge\Facades\WPEmerge;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -9,6 +13,7 @@ $proxy_template = $engine->filter_core_comments_template( $theme_template, true 
 
 // Avoid accidental recursion.
 if ( $blade_template === $proxy_template ) {
+	/** @noinspection PhpIncludeInspection */
 	require $theme_template;
 	return;
 }

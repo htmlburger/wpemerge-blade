@@ -2,6 +2,7 @@
 
 namespace WPEmergeBlade\View;
 
+use InvalidArgumentException;
 use WPEmerge\Facades\View;
 use WPEmerge\Helpers\MixedType;
 use WPEmerge\View\ViewEngineInterface;
@@ -78,7 +79,7 @@ class ViewEngine implements ViewEngineInterface {
 		try {
 			$match_root = '/^' . preg_quote( $this->views . DIRECTORY_SEPARATOR, '/' ) . '/i';
 			return preg_replace( $match_root, '', realpath( $finder->find( $view ) ) );
-		} catch (InvalidArgumentException $e) {
+		} catch ( InvalidArgumentException $e ) {
 			return '';
 		}
 	}
@@ -131,7 +132,7 @@ class ViewEngine implements ViewEngineInterface {
 	 * Pass any other methods to the view factory instance.
 	 *
 	 * @param  string $method
-	 * @param  array  $params
+	 * @param  array  $parameters
 	 * @return mixed
 	 */
 	public function __call( $method, $parameters ) {

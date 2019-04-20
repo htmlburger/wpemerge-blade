@@ -30,7 +30,7 @@ class Blade
 	/**
 	 * Engine resolver
 	 *
-	 * @var Illuminate\View\EngineResolver
+	 * @var \Illuminate\View\Engines\EngineResolver
 	 */
 	protected $engine_resolver = null;
 
