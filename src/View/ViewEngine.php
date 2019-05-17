@@ -17,22 +17,25 @@ class ViewEngine implements ViewEngineInterface {
 	protected $blade = null;
 
 	/**
-	 * Root directory for all views.
+	 * Directories for all views.
 	 *
-	 * @var string
+	 * @var array<string>
 	 */
-	protected $views = '';
+	protected $directories = [];
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Blade  $blade
-	 * @param string $views
-	 * @param string $cache
+	 * @param Blade         $blade
+	 * @param array<string> $directories
+	 * @param string        $cache
 	 */
-	public function __construct( Blade $blade, $views, $cache ) {
+	public function __construct( Blade $blade, $directories, $cache ) {
+		// Ensure cache directory exists.
+		wp_mkdir_p( $cache );
+
 		$this->blade = $blade;
-		$this->views = MixedType::normalizePath( realpath( $views ) );
+		$this->directories = $directories;
 
 		$this->blade
 			->get_view_factory()
@@ -58,8 +61,6 @@ class ViewEngine implements ViewEngineInterface {
 
 				$blade_view->with( $view->getContext() );
 			} );
-
-		wp_mkdir_p( $cache ); // ensure cache directory exists
 	}
 
 	/**
@@ -76,9 +77,9 @@ class ViewEngine implements ViewEngineInterface {
 	public function canonical( $view ) {
 		$view = $this->bladeCanonical( $view );
 		$finder = $this->blade->get_view_factory()->getFinder();
+
 		try {
-			$match_root = '/^' . preg_quote( $this->views . DIRECTORY_SEPARATOR, '/' ) . '/i';
-			return preg_replace( $match_root, '', realpath( $finder->find( $view ) ) );
+			return realpath( $finder->find( $view ) );
 		} catch ( InvalidArgumentException $e ) {
 			return '';
 		}
@@ -107,13 +108,19 @@ class ViewEngine implements ViewEngineInterface {
 	 * @return string
 	 */
 	public function bladeCanonical( $view ) {
-		$views_root = $this->views . DIRECTORY_SEPARATOR;
 		$normalized = realpath( $view );
 
 		if ( $normalized && is_file( $normalized ) ) {
-			$normalized = preg_replace( '~^' . preg_quote( $views_root, '~' ) . '~', '', $normalized );
-			$normalized = str_replace( DIRECTORY_SEPARATOR, '.', $normalized );
-			$view = preg_replace( '~(\.blade)?\.php$~', '', $normalized );
+			foreach ( $this->directories as $directory ) {
+				$root = $directory . DIRECTORY_SEPARATOR;
+
+				if ( substr( $normalized, 0, strlen( $root ) ) === $root ) {
+					$normalized = substr( $normalized, strlen( $root ) );
+					$normalized = str_replace( DIRECTORY_SEPARATOR, '.', $normalized );
+					$view = preg_replace( '~(\.blade)?\.php$~', '', $normalized );
+					break;
+				}
+			}
 		}
 
 		return $view;

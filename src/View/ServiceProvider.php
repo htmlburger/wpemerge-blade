@@ -16,15 +16,20 @@ class ServiceProvider implements ServiceProviderInterface {
 		$this->extendConfig( $container, 'blade', [
 			'replace_default_engine' => true,
 			'options' => [
-				'views' => MixedType::normalizePath( get_stylesheet_directory() ),
-				'cache' => MixedType::normalizePath( get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'blade' ),
+				'views' => [get_stylesheet_directory(), get_template_directory()],
+				'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'blade',
 			],
 		] );
 
 		$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ] = function( $c ) {
 			$options = $c[ WPEMERGE_CONFIG_KEY ]['blade']['options'];
-			$blade = new Blade( MixedType::toArray( $options['views'] ), $options['cache'] );
-			return new ViewEngine( $blade, $options['views'], $options['cache'] );
+			$views = MixedType::toArray( $options['views'] );
+			$views = array_map( [MixedType::class, 'normalizePath'], $views );
+			$views = array_filter( $views );
+			$cache = MixedType::normalizePath( $options['cache'] );
+
+			$blade = new Blade( $views, $cache );
+			return new ViewEngine( $blade, $views, $cache );
 		};
 
 		if ( $container[ WPEMERGE_CONFIG_KEY ]['blade']['replace_default_engine'] ) {
