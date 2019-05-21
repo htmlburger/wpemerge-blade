@@ -5,6 +5,7 @@ namespace WPEmergeBlade\View;
 use WPEmerge\Helpers\MixedType;
 use WPEmerge\ServiceProviders\ExtendsConfigTrait;
 use WPEmerge\ServiceProviders\ServiceProviderInterface;
+use WPEmerge\View\NameProxyViewEngine;
 
 class ServiceProvider implements ServiceProviderInterface {
 	use ExtendsConfigTrait;
@@ -15,6 +16,7 @@ class ServiceProvider implements ServiceProviderInterface {
 	public function register( $container ) {
 		$this->extendConfig( $container, 'blade', [
 			'replace_default_engine' => true,
+			'proxy_php_views' => true,
 			'options' => [
 				'views' => [get_stylesheet_directory(), get_template_directory()],
 				'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'blade',
@@ -34,6 +36,15 @@ class ServiceProvider implements ServiceProviderInterface {
 
 		if ( $container[ WPEMERGE_CONFIG_KEY ]['blade']['replace_default_engine'] ) {
 			$container[ WPEMERGE_VIEW_ENGINE_KEY ] = function( $c ) {
+				if ( $c[ WPEMERGE_CONFIG_KEY ]['blade']['proxy_php_views'] ) {
+					return new NameProxyViewEngine( [
+						'.blade.php' => WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY,
+						'.php' => WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY,
+						// use Blade for all other cases as blade views can be referenced
+						// in blade.format.as.well without an extension.
+					], WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
+				}
+
 				return $c[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ];
 			};
 		}
