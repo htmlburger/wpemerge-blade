@@ -39,10 +39,6 @@ class ViewEngine implements ViewEngineInterface {
 
 		$this->blade
 			->get_view_factory()
-			->share( 'global', View::getGlobals() );
-
-		$this->blade
-			->get_view_factory()
 			->getDispatcher()
 			->listen( 'composing: *', function( $event_name, $arguments ) {
 				$blade_view = $arguments[0];
@@ -52,6 +48,9 @@ class ViewEngine implements ViewEngineInterface {
 				unset( $blade_data['obLevel'] );
 				unset( $blade_data['__env'] );
 				unset( $blade_data['app'] );
+
+				// Add globals.
+				$blade_data['global'] = View::getGlobals();
 
 				$view = (new BladeView())
 					->setName( $blade_view->getName() )
