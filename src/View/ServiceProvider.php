@@ -31,9 +31,9 @@ class ServiceProvider implements ServiceProviderInterface {
 			$views = array_map( [MixedType::class, 'normalizePath'], $views );
 			$views = array_filter( $views );
 			$cache = MixedType::normalizePath( $options['cache'] );
-
 			$blade = new Blade( $views, $cache );
-			return new ViewEngine( $blade, $views, $cache );
+
+			return new ViewEngine( $c[ WPEMERGE_APPLICATION_KEY ], $blade, $views, $cache );
 		};
 
 		if ( $container[ WPEMERGE_CONFIG_KEY ]['blade']['replace_default_engine'] ) {
@@ -50,12 +50,15 @@ class ServiceProvider implements ServiceProviderInterface {
 				return $c[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ];
 			};
 		}
+
+		$container[ WPEMERGEBLADE_VIEW_PROXY ] = '';
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function bootstrap( $container ) {
+		$view_engine = $container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ];
 		$hooks = [
 			'index',
 			'404',
@@ -77,10 +80,15 @@ class ServiceProvider implements ServiceProviderInterface {
 		];
 
 		foreach ( $hooks as $hook ) {
-			add_filter( "{$hook}_template_hierarchy", [$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ], 'filter_core_template_hierarchy'], 100 );
+			add_filter( "{$hook}_template_hierarchy", [$view_engine, 'filter_core_template_hierarchy'], 100 );
 		}
 
-		add_filter( 'comments_template', [$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ], 'filter_core_comments_template'], 100 );
-		add_filter( 'get_search_form', [$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ], 'filter_core_searchform'], 100 );
+		add_filter( 'get_search_form', [$view_engine, 'filter_core_searchform'], 100 );
+		add_filter( 'comments_template', [$view_engine, 'filter_core_template_include'], 100 );
+
+		// Use lower priority than HttpKernel so it receives the filtered template.
+		add_filter( 'template_include', [$view_engine, 'filter_core_template_include'], 3090 );
+		add_filter( 'wc_get_template', [$view_engine, 'filter_core_template_include'], 3090 );
+		add_filter( 'wc_get_template_part', [$view_engine, 'filter_core_template_include'], 3090 );
 	}
 }

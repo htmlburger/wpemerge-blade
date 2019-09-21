@@ -2,10 +2,17 @@
 
 Enables the use of Blade views in [WP Emerge](https://github.com/htmlburger/wpemerge).
 
+## Summary
+
+- [Quickstart](#quickstart)
+- [Options](#options)
+- [Extending Blade](#extending-blade)
+- [WooCommerce](#woocommerce)
+
 ## Quickstart
 
 1. Run `composer require htmlburger/wpemerge-blade` in your theme directory
-1. Add `\WPEmergeBlade\View\ServiceProvider` to your array of providers when booting WP Emerge:
+1. Add `\WPEmergeBlade\View\ServiceProvider` to your array of providers in WP Emerge's configuration:
     ```php
     WPEmerge::bootstrap( [
         'providers' => [
@@ -13,7 +20,7 @@ Enables the use of Blade views in [WP Emerge](https://github.com/htmlburger/wpem
         ],
     ] );
     ```
-1. If you are using the [WP Emerge Starter Theme](https://github.com/htmlburger/wpemerge-theme) you can replace your theme views with the ones inside `theme/alternative/blade/`.
+1. If you are using the [WP Emerge Starter Theme](https://github.com/htmlburger/wpemerge-theme) you can **replace** your theme views with the ones inside `theme/views-alternative/blade/`.
 
 ## Options
 
@@ -65,3 +72,12 @@ With this, you now have your very own custom Blade directive:
 ```
 
 More information on how you can extend Blade is available on [https://laravel.com/docs/5.4/blade#extending-blade](https://laravel.com/docs/5.4/blade#extending-blade)
+
+## WooCommerce
+
+In order to render WooCommerce templates using Blade you must **NOT** use the `.blade.php` extension for WooCommerce templates as it will not detect them. Instead, use the usual `.php` extension for your files, for example:
+- `my-theme/woocommerce.php`
+- `my-theme/woocommerce/single-product.php`
+- `my-theme/woocommerce/archive-product.php`
+
+Even though these files are `.php`, this extension will render them using Blade.

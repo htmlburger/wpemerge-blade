@@ -50,6 +50,8 @@ class Blade
 		$this->service_provider->register();
 
 		$this->engine_resolver = $this->container->make( 'view.engine.resolver' );
+
+		$this->get_view_factory()->addExtension( 'php', 'blade' );
 	}
 
 	/**

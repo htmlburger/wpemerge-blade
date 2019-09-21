@@ -12,3 +12,7 @@ if ( ! defined( 'WPEMERGEBLADE_DIR' ) ) {
 if ( ! defined( 'WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY' ) ) {
 	define( 'WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY', 'wpemergeblade.view.blade_view_engine' );
 }
+
+if ( ! defined( 'WPEMERGEBLADE_VIEW_PROXY' ) ) {
+	define( 'WPEMERGEBLADE_VIEW_PROXY', 'wpemergeblade.view.proxy' );
+}

@@ -3,12 +3,20 @@
 namespace WPEmergeBlade\View;
 
 use InvalidArgumentException;
+use WPEmerge\Application\Application;
 use WPEmerge\Facades\View;
 use WPEmerge\Helpers\MixedType;
 use WPEmerge\View\ViewEngineInterface;
 use WPEmerge\View\ViewNotFoundException;
 
 class ViewEngine implements ViewEngineInterface {
+	/**
+	 * Application.
+	 *
+	 * @var Application
+	 */
+	protected $app = null;
+
 	/**
 	 * Blade instance.
 	 *
@@ -30,10 +38,11 @@ class ViewEngine implements ViewEngineInterface {
 	 * @param array<string> $directories
 	 * @param string        $cache
 	 */
-	public function __construct( Blade $blade, $directories, $cache ) {
+	public function __construct( Application $app, Blade $blade, $directories, $cache ) {
 		// Ensure cache directory exists.
 		wp_mkdir_p( $cache );
 
+		$this->app = $app;
 		$this->blade = $blade;
 		$this->directories = $directories;
 
@@ -173,6 +182,44 @@ class ViewEngine implements ViewEngineInterface {
 	}
 
 	/**
+	 * Proxy a template that is going to be included imminently.
+	 *
+	 * @param  string $template
+	 * @return string
+	 */
+	protected function proxy( $template ) {
+		$container = $this->app->getContainer();
+
+		$container[ WPEMERGEBLADE_VIEW_PROXY ] = $template;
+
+		return WPEMERGEBLADE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'proxy.php';
+	}
+
+	/**
+	 * Get if a template is a WooCommerce one.
+	 *
+	 * @param  string $template
+	 * @return boolean
+	 */
+	protected function is_woocommerce_template( $template ) {
+		$normalized = MixedType::normalizePath( $template );
+		$woocommerce = [
+			MixedType::normalizePath( get_stylesheet_directory() . '/woocommerce.php' ),
+			MixedType::normalizePath( get_stylesheet_directory() . '/woocommerce/' ),
+			MixedType::normalizePath( get_template_directory() . '/woocommerce.php' ),
+			MixedType::normalizePath( get_template_directory() . '/woocommerce/' ),
+		];
+
+		foreach ( $woocommerce as $path ) {
+			if ( substr( $template, 0, strlen( $path ) ) === $path ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Filter core template hierarchy to prioritize files with the .blade.php extension.
 	 *
 	 * @param  array<string> $templates
@@ -197,26 +244,6 @@ class ViewEngine implements ViewEngineInterface {
 	}
 
 	/**
-	 * Filter the core comments template to prioritize files with the .blade.php extension.
-	 *
-	 * @param  string  $template
-	 * @param  boolean $proxy
-	 * @return string
-	 */
-	public function filter_core_comments_template( $template, $proxy = true ) {
-		$is_php = $this->hasSuffix( $template, '.php' );
-		$is_blade = $this->hasSuffix( $template, '.blade.php' );
-		$blade_template = $is_blade ? $template : $this->replaceSuffix( $template, '.php', '.blade.php' );
-		$proxy_template = WPEMERGEBLADE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'comments-proxy.php';
-
-		if ( $is_php && $this->exists( $blade_template ) ) {
-			$template = $proxy ? $proxy_template : $blade_template;
-		}
-
-		return $template;
-	}
-
-	/**
 	 * Filter the core searchform html if a searchform.blade.php view exists.
 	 *
 	 * @param  string $html
@@ -230,5 +257,28 @@ class ViewEngine implements ViewEngineInterface {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Filter core template included to prioritize files with the .blade.php extension.
+	 * Covers cases where *_template_hierarchy does not apply or has been overridden.
+	 *
+	 * @param  string $template
+	 * @return string
+	 */
+	public function filter_core_template_include( $template ) {
+		if ( ! $this->hasSuffix( $template, '.blade.php' ) ) {
+			if ( $this->is_woocommerce_template( $template ) ) {
+				return $this->proxy( $template );
+			}
+
+			$blade_template = $this->replaceSuffix( $template, '.php', '.blade.php' );
+
+			if ( $this->exists( $blade_template ) ) {
+				return $this->proxy( $blade_template );
+			}
+		}
+
+		return $template;
 	}
 }
