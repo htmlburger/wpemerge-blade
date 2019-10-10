@@ -39,12 +39,16 @@ class ServiceProvider implements ServiceProviderInterface {
 		if ( $container[ WPEMERGE_CONFIG_KEY ]['blade']['replace_default_engine'] ) {
 			$container[ WPEMERGE_VIEW_ENGINE_KEY ] = function( $c ) {
 				if ( $c[ WPEMERGE_CONFIG_KEY ]['blade']['proxy_php_views'] ) {
-					return new NameProxyViewEngine( [
-						'.blade.php' => WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY,
-						'.php' => WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY,
-						// use Blade for all other cases as blade views can be referenced
-						// in blade.format.as.well without an extension.
-					], WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
+					return new NameProxyViewEngine(
+						$c[ WPEMERGE_APPLICATION_KEY ],
+						[
+							'.blade.php' => WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY,
+							'.php' => WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY,
+							// use Blade for all other cases as blade views can be referenced
+							// in blade.format.as.well without an extension.
+						],
+						WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY
+					);
 				}
 
 				return $c[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ];
