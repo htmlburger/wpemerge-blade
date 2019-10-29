@@ -58,14 +58,12 @@ class ViewEngine implements ViewEngineInterface {
 				unset( $blade_data['__env'] );
 				unset( $blade_data['app'] );
 
-				// Add globals.
-				$blade_data['global'] = View::getGlobals();
-
 				$view = (new BladeView())
 					->setName( $blade_view->getName() )
 					->with( $blade_data );
 
-				View::compose( $view );
+				$compose = $this->app->resolve( WPEMERGE_VIEW_COMPOSE_ACTION_KEY );
+				$compose( $view );
 
 				$blade_view->with( $view->getContext() );
 			} );
