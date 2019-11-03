@@ -33,7 +33,7 @@ class ServiceProvider implements ServiceProviderInterface {
 			$cache = MixedType::normalizePath( $options['cache'] );
 			$blade = new Blade( $views, $cache );
 
-			return new ViewEngine( $c[ WPEMERGE_APPLICATION_KEY ], $blade, $views, $cache );
+			return new ViewEngine( $c[ WPEMERGE_VIEW_COMPOSE_ACTION_KEY ], $blade, $views, $cache );
 		};
 
 		if ( $container[ WPEMERGE_CONFIG_KEY ]['blade']['replace_default_engine'] ) {

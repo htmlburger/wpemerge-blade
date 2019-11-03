@@ -3,20 +3,11 @@
 namespace WPEmergeBlade\View;
 
 use InvalidArgumentException;
-use WPEmerge\Application\Application;
-use WPEmerge\Facades\View;
 use WPEmerge\Helpers\MixedType;
 use WPEmerge\View\ViewEngineInterface;
 use WPEmerge\View\ViewNotFoundException;
 
 class ViewEngine implements ViewEngineInterface {
-	/**
-	 * Application.
-	 *
-	 * @var Application
-	 */
-	protected $app = null;
-
 	/**
 	 * Blade instance.
 	 *
@@ -34,22 +25,22 @@ class ViewEngine implements ViewEngineInterface {
 	/**
 	 * Constructor.
 	 *
+	 * @param callable      $compose
 	 * @param Blade         $blade
 	 * @param array<string> $directories
 	 * @param string        $cache
 	 */
-	public function __construct( Application $app, Blade $blade, $directories, $cache ) {
+	public function __construct( callable $compose, Blade $blade, $directories, $cache ) {
 		// Ensure cache directory exists.
 		wp_mkdir_p( $cache );
 
-		$this->app = $app;
 		$this->blade = $blade;
 		$this->directories = $directories;
 
 		$this->blade
 			->get_view_factory()
 			->getDispatcher()
-			->listen( 'composing: *', function( $event_name, $arguments ) {
+			->listen( 'composing: *', function( $event_name, $arguments ) use ( $compose ) {
 				$blade_view = $arguments[0];
 				$blade_data = $blade_view->getData();
 
@@ -62,7 +53,6 @@ class ViewEngine implements ViewEngineInterface {
 					->setName( $blade_view->getName() )
 					->with( $blade_data );
 
-				$compose = $this->app->resolve( WPEMERGE_VIEW_COMPOSE_ACTION_KEY );
 				$compose( $view );
 
 				$blade_view->with( $view->getContext() );
@@ -186,9 +176,14 @@ class ViewEngine implements ViewEngineInterface {
 	 * @return string
 	 */
 	protected function proxy( $template ) {
-		$container = $this->app->getContainer();
+		$engine = $this;
 
-		$container[ WPEMERGEBLADE_VIEW_PROXY ] = $template;
+		add_filter( 'wpemergeblade.proxy', function () use ( $engine, $template ) {
+			return [
+				'engine' => $engine,
+				'template' => $template,
+			];
+		} );
 
 		return WPEMERGEBLADE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'proxy.php';
 	}

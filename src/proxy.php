@@ -1,14 +1,12 @@
 <?php
 
-use WPEmerge\Facades\WPEmerge;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$template = WPEmerge::resolve( WPEMERGEBLADE_VIEW_PROXY );
+$proxy = apply_filters( 'wpemergeblade.proxy', [] );
+remove_all_filters( 'wpemergeblade.proxy' );
 
-if ( ! empty( $template ) ) {
-	$engine = WPEmerge::resolve( WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
-	echo $engine->make( [$template] )->toString();
+if ( ! empty( $proxy ) ) {
+	echo $proxy['engine']->make( [$proxy['template']] )->toString();
 }
