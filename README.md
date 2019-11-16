@@ -12,7 +12,7 @@ Enables the use of Blade views in [WP Emerge](https://github.com/htmlburger/wpem
 ## Quickstart
 
 1. Run `composer require htmlburger/wpemerge-blade` in your theme directory
-1. Add `\WPEmergeBlade\View\ServiceProvider` to your array of providers in WP Emerge's configuration:
+2. Add `\WPEmergeBlade\View\ServiceProvider` to your array of providers in WP Emerge's configuration:
     ```php
     WPEmerge::bootstrap( [
         'providers' => [
@@ -20,7 +20,7 @@ Enables the use of Blade views in [WP Emerge](https://github.com/htmlburger/wpem
         ],
     ] );
     ```
-1. If you are using the [WP Emerge Starter Theme](https://github.com/htmlburger/wpemerge-theme) you can **replace** your theme views with the ones inside `theme/views-alternative/blade/`.
+3. If you are using the [WP Emerge Starter Theme](https://github.com/htmlburger/wpemerge-theme) you can **replace** your theme views with the ones inside `theme/views-alternative/blade/`.
 
 ## Options
 
