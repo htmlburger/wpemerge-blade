@@ -14,7 +14,7 @@ class ServiceProvider implements ServiceProviderInterface {
 	 * {@inheritDoc}
 	 */
 	public function register( $container ) {
-		$cache_dir = $container[ WPEMERGE_CONFIG_KEY ]['cache'];
+		$cache_dir = $container[ WPEMERGE_CONFIG_KEY ]['cache']['path'];
 
 		$this->extendConfig( $container, 'blade', [
 			'replace_default_engine' => true,
