@@ -14,7 +14,7 @@ Enables the use of Blade views in [WP Emerge](https://github.com/htmlburger/wpem
 1. Run `composer require htmlburger/wpemerge-blade` in your theme directory
 2. Add `\WPEmergeBlade\View\ServiceProvider` to your array of providers in WP Emerge's configuration:
     ```php
-    WPEmerge::bootstrap( [
+    \App::make()->bootstrap( [
         'providers' => [
             \WPEmergeBlade\View\ServiceProvider::class,
         ],
@@ -44,7 +44,7 @@ Default options:
 
 You can change these options by specifying a `blade` key in your WP Emerge config array:
 ```php
-WPEmerge::bootstrap( [
+\App::make()->bootstrap( [
     // ... other WP Emerge options
     'blade' => [
         // ... other WP Emerge Blade options
@@ -60,8 +60,8 @@ WPEmerge::bootstrap( [
 
 You can use the following to extend blade with a custom directive, for example:
 ```php
-// WPEmerge::resolve() used for brevity's sake - use a Service Provider instead.
-$blade = WPEmerge::resolve( WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
+// \App::resolve() used for brevity's sake - use a Service Provider instead.
+$blade = \App::resolve( WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY );
 $blade->compiler()->directive( 'mydirective', function( $expression ) {
     return "<?php echo 'MyDirective: ' . $expression . '!'; ?>";
 } );
