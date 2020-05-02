@@ -204,7 +204,7 @@ class ViewEngine implements ViewEngineInterface {
 		];
 
 		foreach ( $woocommerce as $path ) {
-			if ( substr( $template, 0, strlen( $path ) ) === $path ) {
+			if ( substr( $normalized, 0, strlen( $path ) ) === $path ) {
 				return true;
 			}
 		}
