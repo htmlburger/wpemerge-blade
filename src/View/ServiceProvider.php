@@ -84,15 +84,15 @@ class ServiceProvider implements ServiceProviderInterface {
 		];
 
 		foreach ( $hooks as $hook ) {
-			add_filter( "{$hook}_template_hierarchy", [$view_engine, 'filter_core_template_hierarchy'], 100 );
+			add_filter( "{$hook}_template_hierarchy", [$view_engine, 'filterCoreTemplateHierarchy'], 100 );
 		}
 
-		add_filter( 'get_search_form', [$view_engine, 'filter_core_searchform'], 100 );
-		add_filter( 'comments_template', [$view_engine, 'filter_core_template_include'], 100 );
+		add_filter( 'get_search_form', [$view_engine, 'filterCoreSearchform'], 100 );
+		add_filter( 'comments_template', [$view_engine, 'filterCoreTemplateInclude'], 100 );
 
 		// Use lower priority than HttpKernel so it receives the filtered template.
-		add_filter( 'template_include', [$view_engine, 'filter_core_template_include'], 3090 );
-		add_filter( 'wc_get_template', [$view_engine, 'filter_core_template_include'], 3090 );
-		add_filter( 'wc_get_template_part', [$view_engine, 'filter_core_template_include'], 3090 );
+		add_filter( 'template_include', [$view_engine, 'filterCoreTemplateInclude'], 3090 );
+		add_filter( 'wc_get_template', [$view_engine, 'filterCoreTemplateInclude'], 3090 );
+		add_filter( 'wc_get_template_part', [$view_engine, 'filterCoreTemplateInclude'], 3090 );
 	}
 }

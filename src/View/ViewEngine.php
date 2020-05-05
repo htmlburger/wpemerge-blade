@@ -194,7 +194,7 @@ class ViewEngine implements ViewEngineInterface {
 	 * @param  string $template
 	 * @return boolean
 	 */
-	protected function is_woocommerce_template( $template ) {
+	protected function isWooCommerceTemplate( $template ) {
 		$normalized = MixedType::normalizePath( $template );
 		$woocommerce = [
 			MixedType::normalizePath( get_stylesheet_directory() . '/woocommerce.php' ),
@@ -218,8 +218,8 @@ class ViewEngine implements ViewEngineInterface {
 	 * @param  array<string> $templates
 	 * @return array<string>
 	 */
-	public function filter_core_template_hierarchy( $templates ) {
-		$template_pairs = array_map( function( $template ) {
+	public function filterCoreTemplateHierarchy( $templates ) {
+		$pairs = array_map( function( $template ) {
 			$pair = [$template];
 			if ( ! $this->hasSuffix( $template, '.blade.php') ) {
 				array_unshift( $pair, $this->replaceSuffix( $template, '.php', '.blade.php' ) );
@@ -227,13 +227,7 @@ class ViewEngine implements ViewEngineInterface {
 			return $pair;
 		}, $templates );
 
-		$filtered_templates = [];
-
-		foreach ( $template_pairs as $pair ) {
-			$filtered_templates = array_merge( $filtered_templates, $pair );
-		}
-
-		return $filtered_templates;
+		return call_user_func_array( 'array_merge', $pairs );
 	}
 
 	/**
@@ -242,7 +236,7 @@ class ViewEngine implements ViewEngineInterface {
 	 * @param  string $html
 	 * @return string
 	 */
-	public function filter_core_searchform( $html ) {
+	public function filterCoreSearchform( $html ) {
 		try {
 			$html = $this->make( ['searchform'] )->toString();
 		} catch ( ViewNotFoundException $e ) {
@@ -259,9 +253,9 @@ class ViewEngine implements ViewEngineInterface {
 	 * @param  string $template
 	 * @return string
 	 */
-	public function filter_core_template_include( $template ) {
+	public function filterCoreTemplateInclude( $template ) {
 		if ( ! $this->hasSuffix( $template, '.blade.php' ) ) {
-			if ( $this->is_woocommerce_template( $template ) ) {
+			if ( $this->isWooCommerceTemplate( $template ) ) {
 				return $this->proxy( $template );
 			}
 
