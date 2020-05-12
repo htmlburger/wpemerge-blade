@@ -36,8 +36,10 @@ Default options:
     
     // Options passed directly to Blade.
     'options' => [
-        'views' => get_stylesheet_directory(),
-        'cache' => get_stylesheet_directory() . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'blade',
+        // 'views' defaults to the main ['views'] key of the configuration.
+        'views' => [get_stylesheet_directory(), get_template_directory()],
+        // 'cache' defaults to the main ['cache']['path'] key of the configuration.
+        'cache' => 'wp-content/uploads/wpemerge/cache/blade',
     ],
 ]
 ```

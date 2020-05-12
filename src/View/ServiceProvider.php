@@ -14,13 +14,14 @@ class ServiceProvider implements ServiceProviderInterface {
 	 * {@inheritDoc}
 	 */
 	public function register( $container ) {
+		$views_dir = (array) $container[ WPEMERGE_CONFIG_KEY ]['views'];
 		$cache_dir = $container[ WPEMERGE_CONFIG_KEY ]['cache']['path'];
 
 		$this->extendConfig( $container, 'blade', [
 			'replace_default_engine' => true,
 			'proxy_php_views' => true,
 			'options' => [
-				'views' => [get_stylesheet_directory(), get_template_directory()],
+				'views' => $views_dir,
 				'cache' => MixedType::addTrailingSlash( $cache_dir ) . 'blade',
 			],
 		] );
