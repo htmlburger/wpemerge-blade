@@ -20,6 +20,7 @@ class ServiceProvider implements ServiceProviderInterface {
 		$this->extendConfig( $container, 'blade', [
 			'replace_default_engine' => true,
 			'proxy_php_views' => true,
+			'filter_core_templates' => false,
 			'options' => [
 				'views' => $views_dir,
 				'cache' => MixedType::addTrailingSlash( $cache_dir ) . 'blade',
@@ -63,6 +64,12 @@ class ServiceProvider implements ServiceProviderInterface {
 	 * {@inheritDoc}
 	 */
 	public function bootstrap( $container ) {
+		$filter_core = $container[ WPEMERGE_CONFIG_KEY ]['blade']['filter_core_templates'];
+
+		if ( ! $filter_core ) {
+			return;
+		}
+
 		$view_engine = $container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ];
 		$hooks = [
 			'index',

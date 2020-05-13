@@ -29,11 +29,15 @@ Default options:
 [
     // Automatically replace the default view engine for WP Emerge.
     'replace_default_engine' => true,
-    
+
     // Pass .php views to the default view engine.
     // replace_default_engine must be true for this to take effect.
     'proxy_php_views' => true,
-    
+
+    // Filter core theme templates to search for .blade.php files.
+    // This is only necessary in themes.
+    'filter_core_templates' => false,
+
     // Options passed directly to Blade.
     'options' => [
         // 'views' defaults to the main ['views'] key of the configuration.
