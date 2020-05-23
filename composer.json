@@ -7,7 +7,7 @@
     "authors": [
         {
           "name": "Atanas Angelov",
-          "email": "atanas.angelov.dev@gmail.com",
+          "email": "hi@atanas.dev",
           "role": "Developer"
         },
         {
@@ -20,7 +20,7 @@
     "support": {
         "source": "https://github.com/htmlburger/wpemerge-blade",
         "issues": "https://github.com/htmlburger/wpemerge-blade/issues",
-        "email": "wordpress@htmlburger.com"
+        "email": "hi@atanas.dev"
     },
     "autoload": {
         "psr-4": {
@@ -33,8 +33,6 @@
     "require": {
         "php": "^7.0",
         "illuminate/view": "^7.12.0",
-        "htmlburger/wpemerge": "~0.15.0"
-    },
-    "require-dev": {
+        "htmlburger/wpemerge": "~0.16.0"
     }
 }
