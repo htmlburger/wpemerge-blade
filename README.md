@@ -21,6 +21,7 @@ Enables the use of Blade views in [WP Emerge](https://github.com/htmlburger/wpem
     ] );
     ```
 3. If you are using the [WP Emerge Starter Theme](https://github.com/htmlburger/wpemerge-theme) you can **replace** your theme views with the ones inside `theme/views-alternative/blade/`.
+4. If you are using the [WP Emerge Starter Theme](https://github.com/htmlburger/wpemerge-theme) you must enable the `filter_core_templates` configuration option in order to have `.blade.php` template support for WordPress core templates (`index.php`, `single.php` etc.).
 
 ## Options
 
