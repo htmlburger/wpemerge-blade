@@ -11,8 +11,7 @@ use Illuminate\View\ViewServiceProvider;
 /**
  * Modified version of jenssegers/blade
  */
-class Blade
-{
+class Blade {
 	/**
 	 * Container
 	 *
