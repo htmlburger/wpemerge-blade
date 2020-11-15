@@ -173,15 +173,17 @@ class ViewEngine implements ViewEngineInterface {
 	 * Proxy a template that is going to be included imminently.
 	 *
 	 * @param  string $template
+	 * @param  array  $arguments
 	 * @return string
 	 */
-	protected function proxy( $template ) {
+	protected function proxy( $template, $arguments = [] ) {
 		$engine = $this;
 
-		add_filter( 'wpemergeblade.proxy', function () use ( $engine, $template ) {
+		add_filter( 'wpemergeblade.proxy', function () use ( $engine, $template, $arguments ) {
 			return [
 				'engine' => $engine,
 				'template' => $template,
+				'arguments' => $arguments,
 			];
 		} );
 
@@ -247,25 +249,39 @@ class ViewEngine implements ViewEngineInterface {
 	}
 
 	/**
-	 * Filter core template included to prioritize files with the .blade.php extension.
+	 * Filter included core template to prioritize files with the .blade.php extension.
 	 * Covers cases where *_template_hierarchy does not apply or has been overridden.
 	 *
 	 * @param  string $template
+	 * @param  array  $arguments
 	 * @return string
 	 */
-	public function filterCoreTemplateInclude( $template ) {
+	public function filterCoreTemplateInclude( $template, $arguments = [] ) {
 		if ( ! $this->hasSuffix( $template, '.blade.php' ) ) {
 			if ( $this->isWooCommerceTemplate( $template ) ) {
-				return $this->proxy( $template );
+				// Woo will not load .blade.php files so we must always use .php and always treat them as Blade.
+				return $this->proxy( $template, $arguments );
 			}
 
 			$blade_template = $this->replaceSuffix( $template, '.php', '.blade.php' );
 
 			if ( $this->exists( $blade_template ) ) {
-				return $this->proxy( $blade_template );
+				return $this->proxy( $blade_template, $arguments );
 			}
 		}
 
 		return $template;
+	}
+
+	/**
+	 * Filter included WooCommerce template identically to filterCoreTemplateInclude but also passing Woo arguments.
+	 *
+	 * @param  string $template
+	 * @param  string $template_name
+	 * @param  array  $args
+	 * @return string
+	 */
+	public function filterWooTemplateInclude( $template, $template_name, $args ) {
+		return $this->filterCoreTemplateInclude( $template, $args );
 	}
 }

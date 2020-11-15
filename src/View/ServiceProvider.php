@@ -100,7 +100,7 @@ class ServiceProvider implements ServiceProviderInterface {
 
 		// Use lower priority than HttpKernel so it receives the filtered template.
 		add_filter( 'template_include', [$view_engine, 'filterCoreTemplateInclude'], 3090 );
-		add_filter( 'wc_get_template', [$view_engine, 'filterCoreTemplateInclude'], 3090 );
 		add_filter( 'wc_get_template_part', [$view_engine, 'filterCoreTemplateInclude'], 3090 );
+		add_filter( 'wc_get_template', [$view_engine, 'filterWooTemplateInclude'], 3090, 3 );
 	}
 }
