@@ -28,12 +28,13 @@ class ServiceProvider implements ServiceProviderInterface {
 		] );
 
 		$container[ WPEMERGEBLADE_VIEW_BLADE_VIEW_ENGINE_KEY ] = function( $c ) {
+			$namespace = $c[ WPEMERGE_CONFIG_KEY ]['namespace'];
 			$options = $c[ WPEMERGE_CONFIG_KEY ]['blade']['options'];
 			$views = MixedType::toArray( $options['views'] );
 			$views = array_map( [MixedType::class, 'normalizePath'], $views );
 			$views = array_filter( $views );
 			$cache = MixedType::normalizePath( $options['cache'] );
-			$blade = new Blade( $views, $cache );
+			$blade = new Blade( $namespace, $views, $cache );
 
 			return new ViewEngine( $c[ WPEMERGE_VIEW_COMPOSE_ACTION_KEY ], $blade, $views, $cache );
 		};

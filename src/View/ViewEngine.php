@@ -38,7 +38,8 @@ class ViewEngine implements ViewEngineInterface {
 		$this->directories = $directories;
 
 		$this->blade
-			->get_view_factory()
+			->container()
+			->get( 'view' )
 			->getDispatcher()
 			->listen( 'composing: *', function( $event_name, $arguments ) use ( $compose ) {
 				$blade_view = $arguments[0];
@@ -64,7 +65,7 @@ class ViewEngine implements ViewEngineInterface {
 	 */
 	public function exists( $view ) {
 		$view = $this->bladeCanonical( $view );
-		return $this->blade->get_view_factory()->exists( $view );
+		return $this->blade->container()->get( 'view' )->exists( $view );
 	}
 
 	/**
@@ -72,7 +73,7 @@ class ViewEngine implements ViewEngineInterface {
 	 */
 	public function canonical( $view ) {
 		$view = $this->bladeCanonical( $view );
-		$finder = $this->blade->get_view_factory()->getFinder();
+		$finder = $this->blade->container()->get( 'view' )->getFinder();
 
 		try {
 			return realpath( $finder->find( $view ) );
@@ -128,7 +129,7 @@ class ViewEngine implements ViewEngineInterface {
 	 * @return mixed
 	 */
 	public function compiler() {
-		return $this->blade->get_compiler();
+		return $this->blade->compiler();
 	}
 
 	/**
@@ -139,7 +140,7 @@ class ViewEngine implements ViewEngineInterface {
 	 * @return mixed
 	 */
 	public function __call( $method, $parameters ) {
-		$factory = $this->blade->get_view_factory();
+		$factory = $this->blade->container()->get( 'view' );
 		return call_user_func_array( [$factory, $method], $parameters );
 	}
 

@@ -13,13 +13,6 @@ use Illuminate\View\ViewServiceProvider;
  */
 class Blade {
 	/**
-	 * Container
-	 *
-	 * @var Container
-	 */
-	protected $container = null;
-
-	/**
 	 * View service provider
 	 *
 	 * @var ViewServiceProvider
@@ -36,45 +29,90 @@ class Blade {
 	/**
 	 * Constructor
 	 *
+	 * @param string            $namespace
 	 * @param string[]          $view_paths
 	 * @param string            $cache_path
 	 * @param ContainerContract $container
 	 */
-	public function __construct( $view_paths, $cache_path, ContainerContract $container = null ) {
-		$this->container = $container ? $container : new Container();
+	public function __construct( $namespace, $view_paths, $cache_path, ContainerContract $container = null ) {
+		$this->setContainer( $container ? $container : new Container() );
 
-		$this->addBindingsToContainer( $this->container, $view_paths, $cache_path );
+		$this->addBindingsToContainer( $namespace, $this->container(), $view_paths, $cache_path );
 
-		$this->service_provider = new ViewServiceProvider( $this->container );
+		$this->service_provider = new ViewServiceProvider( $this->container() );
 		$this->service_provider->register();
 
-		$this->engine_resolver = $this->container->make( 'view.engine.resolver' );
+		$this->engine_resolver = $this->container()->make( 'view.engine.resolver' );
 
-		$this->get_view_factory()->addExtension( 'php', 'blade' );
+		$this->container()->get( 'view' )->addExtension( 'php', 'blade' );
+	}
+
+	/**
+	 * Get container instance.
+	 *
+	 * @return Container
+	 */
+	public function container() {
+		return Container::getInstance();
+	}
+
+	/**
+	 * Set container instance.
+	 *
+	 * @param Container $container
+	 * @return void
+	 */
+	public function setContainer( $container ) {
+		Container::setInstance( $container );
 	}
 
 	/**
 	 * Add all required bindings to a container
 	 *
+	 * @param string            $namespace
 	 * @param ContainerContract $container
 	 * @param string[]          $view_paths
 	 * @param string            $cache_path
 	 */
-	protected function addBindingsToContainer( $container, $view_paths, $cache_path ) {
-		$container->bindIf('files', function() {
+	protected function addBindingsToContainer( $namespace, $container, $view_paths, $cache_path ) {
+		$container->bind( 'app', function () use ( $namespace ) {
+			return new Application( $namespace );
+		} );
+
+		$container->bindIf( 'files', function() {
 			return new Filesystem();
-		}, true);
+		}, true );
 
-		$container->bindIf('events', function() {
+		$container->bindIf( 'events', function() {
 			return new Dispatcher();
-		}, true);
+		}, true );
 
-		$container->bindIf('config', function() use ( $view_paths, $cache_path ) {
+		$container->bindIf( 'config', function() use ( $view_paths, $cache_path ) {
 			return [
 				'view.paths' => $view_paths,
 				'view.compiled' => $cache_path,
 			];
-		}, true);
+		}, true );
+
+		$container->alias( 'app', \Illuminate\Foundation\Application::class );
+		$container->alias( 'app', \Illuminate\Contracts\Container\Container::class );
+		$container->alias( 'app', \Illuminate\Contracts\Foundation\Application::class );
+		$container->alias( 'app', \Psr\Container\ContainerInterface::class );
+
+		$container->alias( 'view', \Illuminate\View\Factory::class );
+		$container->alias( 'view', \Illuminate\Contracts\View\Factory::class );
+
+		\Illuminate\Support\Facades\Facade::setFacadeApplication( $container->get( 'app' ) );
+		// \Illuminate\Support\Facades\View::setFacadeApplication();
+	}
+
+	/**
+	 * Get the compiler
+	 *
+	 * @return mixed
+	 */
+	public function compiler() {
+		return $this->engine_resolver->resolve( 'blade' )->getCompiler();
 	}
 
 	/**
@@ -87,26 +125,6 @@ class Blade {
 	 * @return string
 	 */
 	public function render( $view, $data = [], $merge_data = [] ) {
-		$view = $this->container['view']->make( $view, $data, $merge_data );
-		return $view->render();
-	}
-
-	/**
-	 * Get the compiler
-	 *
-	 * @return mixed
-	 */
-	public function get_compiler() {
-		$blade_engine = $this->engine_resolver->resolve( 'blade' );
-		return $blade_engine->getCompiler();
-	}
-
-	/**
-	 * Get the view factory
-	 *
-	 * @return mixed
-	 */
-	public function get_view_factory() {
-		return $this->container['view'];
+		return $this->container()->get( 'view' )->make( $view, $data, $merge_data )->render();
 	}
 }
