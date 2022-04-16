@@ -33,6 +33,6 @@
   "require": {
     "php": "^7.0",
     "illuminate/view": "^7.12.0",
-    "htmlburger/wpemerge": "~0.16.0"
+    "htmlburger/wpemerge": "~0.17.0"
   }
 }
